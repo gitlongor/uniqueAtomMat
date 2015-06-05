@@ -11,7 +11,7 @@ static R_CallMethodDef callMethods[]  = {
   {NULL, NULL, 0}
 };
 
-void R_init_QuasiSeq(DllInfo *info)
+void R_init_uniqueAtomMat(DllInfo *info)
 {
    R_registerRoutines(info, NULL, callMethods, NULL, NULL);
 }
