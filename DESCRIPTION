@@ -5,6 +5,6 @@ Title: Finding Unique or Duplicated Rows or Columns for Atomic Matrices
 Authors@R: person("Long", "Qu", role=c("aut", "cre"), email="long.qu@wright.edu")
 Depends: R (>= 3.1.2)
 Extends: base
-Description: This package provides an alternative implementation of base::duplicated.matrix and base::unique.matrix for atomic matrices (i.e., double, integer, logical, character, complex and raw) directly based on C++ Standard Templete Library std::map, avoiding the time consuming collapse of the matrix into a character vector. 
+Description: This package provides an alternative implementation of base::duplicated.matrix and base::unique.matrix for atomic matrices (i.e., double, integer, logical, character, complex and raw) directly based on C++ Standard Templete Library std::set, avoiding the time consuming collapse of the matrix into a character vector. 
 License: GPL (>= 2)
 NeedsCompilation: yes
