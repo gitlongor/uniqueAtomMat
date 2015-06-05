@@ -5,6 +5,8 @@
 
 \title{Finding Unique or Duplicated Rows or Columns for Atomic Matrices}
 \description{
+These S3 methods are alternative (typically much faster) implementations of couterparts in the \code{base} pacakge for atomic matrices.  
+
   \code{unique.matrix} returns a matrix with duplicated rows (or columns) removed. 
   
   \code{duplicated.matrix} returns a logical vector indicating which rows (or columns) are duplicated. 
@@ -23,54 +25,26 @@
 
 
 \arguments{
-  \item{x}{a vector or a data frame or an array or \code{NULL}.}
-  \item{incomparables}{a vector of values that cannot be compared.
-    \code{FALSE} is a special value, meaning that all values can be
-    compared, and may be the only value accepted for methods other than
-    the default.  It will be coerced internally to the same type as
-       \code{x}.}
+  \item{x}{an atomic matrix of mode \code{"numeric"}, \code{"integer"}, \code{"logical"}, \code{"complex"}, \code{"character"} or \code{"raw"}. When \code{x} is not atomic or when it is not a matrix, the \code{\link[base:unique]{base::unique.matrix}} in the \code{base} package will be called. }
+  
+  \item{incomparables}{a vector of values that cannot be compared, as in \code{\link[base:unique]{base::unique.matrix}}. Only when \code{incomparables=FALSE} will the code in \code{uniqueAtomMat} package be used; otherwise, the \code{base} version will be called. }
+  
   \item{fromLast}{logical indicating if duplication should be considered
-    from the last, i.e., the last (or rightmost) of identical elements will
-    be kept.  This only matters for \code{\link{names}} or
-    \code{\link{dimnames}}.}
+    from the last, as in \code{\link[base:unique]{base::unique.matrix}}. }
+    
   \item{\dots}{arguments for particular methods.}
-  \item{MARGIN}{the matrix margin to be held fixed, as in \code{\link{apply}}.}
+  
+  \item{MARGIN}{a numeric scalar, the matrix margin to be held fixed, as in \code{\link{apply}. Only when \code{length(MARGIN)=1}} and \code{MARGIN=1} or \code{2} will the code in \code{uniqueAtomMat} package be used; otherwise, the \code{base} version will be called.}
 }
 
 \details{
-
-  The array method calculates for each element of the dimension
-  specified by \code{MARGIN} if the remaining dimensions are identical
-  to those for an earlier element (in row-major order).  This would most
-  commonly be used for matrices to find unique rows (the default) or columns
-  (with \code{MARGIN = 2}).
-
-  Note that unlike the Unix command \code{uniq} this omits
-  \emph{duplicated} and not just \emph{repeated} elements/rows.  That
-  is, an element is omitted if it is equal to any previous element and
-  not just if it is equal the immediately previous one.  (For the
-  latter, see \code{\link{rle}}).
+These S3 methods are alternative implementations of couterparts in the \code{base} pacakge for atomic matrices (i.e., double, integer, logical, character, complex and raw) directly based on C++ Standard Template Library (STL) \code{std::set}. The implementation treats the whole row (or columns) \emph{vector} as the key, without converting the mode to \code{character} and collapsing them into a \emph{scalar} as done in \code{base}. Depending on the C++ compiler used on the system, STL \code{std::set} is typically implemented as a sel-balancing tree (usually a red-black tree), which takes \eqn{latex}{O[n\log{(n)}]} to find all duplicates, where \code{n=dim(x)[MARGIN]}.
 
   Missing values are regarded as equal, but \code{NaN} is not equal to
-  \code{NA_real_}.  Character strings are regarded as equal if they are
-  in different encodings but would agree when translated to UTF-8.
+  \code{NA_real_}. 
+  
+  Further, in contrast to the \code{base} counter-parts, characters and numeric values are compared directly based on their internal representations; i.e., no encoding issues for characters nor rounding issues for floating-points are considered. Complex values are compared by their real and imaginary parts separately. All comparisons are exact. 
 
-  Values in \code{incomparables} will never be marked as duplicated.
-  This is intended to be used for a fairly small set of values and will
-  not be efficient for a very large set.
-
-  When used on a data frame with more than one column, or an array or
-  matrix when comparing dimensions of length greater than one, this
-  tests for identity of character representations.  This will
-  catch people who unwisely rely on exact equality of floating-point
-  numbers!
-
-  Character strings will be compared as byte sequences if any input is
-  marked as \code{"bytes"} (see \code{\link{Encoding}}).
-
-
- These are generic functions with methods for vectors (including
-  lists), data frames and arrays (including matrices).
 
   For the default methods, and whenever there are equivalent method
   definitions for \code{duplicated} and \code{anyDuplicated},
@@ -81,124 +55,98 @@
   different when at least one of \code{duplicated} and
   \code{anyDuplicated} has a relevant method.
 
-  \code{duplicated(x, fromLast = TRUE)} is equivalent to but faster than
-  \code{rev(duplicated(rev(x)))}.
-
-  The data frame method works by pasting together a character
-  representation of the rows separated by \code{\\r}, so may be imperfect
-  if the data frame has characters with embedded carriage returns or
-  columns which do not reliably map to characters.
-
-  The array method calculates for each element of the sub-array
-  specified by \code{MARGIN} if the remaining dimensions are identical
-  to those for an earlier (or later, when \code{fromLast = TRUE}) element
-  (in row-major order).  This would most commonly be used to find
-  duplicated rows (the default) or columns (with \code{MARGIN = 2}).
-  Note that \code{MARGIN = 0} returns an array of the same
-  dimensionality attributes as \code{x}.
-
-  Missing values are regarded as equal, but \code{NaN} is not equal to
-  \code{NA_real_}.
-
-  Values in \code{incomparables} will never be marked as duplicated.
-  This is intended to be used for a fairly small set of values and will
-  not be efficient for a very large set.
-
-  When used on a data frame with more than one column, or an array or
-  matrix when comparing dimensions of length greater than one, this
-  tests for identity of character representations.  This will
-  catch people who unwisely rely on exact equality of floating-point
-  numbers!
-
-  Character strings will be compared as byte sequences if any input is
-  marked as \code{"bytes"} (see \code{\link{Encoding}}).
-
-  Except for factors, logical and raw vectors the default \code{nmax = NA} is
-  equivalent to \code{nmax = length(x)}.  Since a hash table of size
-  \code{8*nmax} bytes is allocated, setting \code{nmax} suitably can
-  save large amounts of memory.  For factors it is automatically set to
-  the smaller of \code{length(x)} and the number of levels plus one (for
-  \code{NA}).  If \code{nmax} is set too small there is liable to be an
-  error: \code{nmax = 1} is silently ignored.
-
-  \link{Long vectors} are supported for the default method of
-  \code{duplicated}, but may only be usable if \code{nmax} is supplied.
-  
 }
+
 \value{
-  For a vector, an object of the same type of \code{x}, but with only
-  one copy of each duplicated element.  No attributes are copied (so
-  the result has no names).
+  \code{unique.matrix} returns a matrix with duplicated rows (if \code{MARGIN=1}) or columns (if \code{MARGIN=2}) removed. 
+  
+  \code{duplicated.matrix} returns a logical vector indicating which rows (if \code{MARGIN=1}) or columns (if \code{MARGIN=2}) are duplicated. 
 
-  For a data frame, a data frame is returned with the same columns but
-  possibly fewer rows (and with row names from the first occurrences of
-  the unique rows).
-
-  A matrix or array is subsetted by \code{[, drop = FALSE]}, so
-  dimensions and dimnames are copied appropriately, and the result
-  always has the same number of dimensions as \code{x}.
-
-
-
-    \code{duplicated()}:
-    For a vector input, a logical vector of the same length as
-    \code{x}.  For a data frame, a logical vector with one element for
-    each row.  For a matrix or array, and when \code{MARGIN = 0}, a
-    logical array with the same dimensions and dimnames.
-
-    \code{anyDuplicated()}: an integer or real vector of length one with
-    value the 1-based index of the first duplicate if any, otherwise
-    \code{0}.
+  \code{anyDuplicated.matrix} returns an integer indicating the index of the first duplicate if any, and \code{0L} otherwise.
 
 }
 \section{Warning}{
-  Using this for lists is potentially slow, especially if the elements
-  are not atomic vectors (see \code{\link{vector}}) or differ only
-  in their attributes.  In the worst case it is \eqn{O(n^2)}.
+In contrast to the \code{base} counter-parts, characters and numeric values are compared directly based on their internal representations; i.e., no encoding issues for characters nor rounding issues for floating-points are considered.  Complex values are compared by their real and imaginary parts separately. All comparisons are exact.   \link{Long vectors} are not supported yet. 
 }
-\references{
-  Becker, R. A., Chambers, J. M. and Wilks, A. R. (1988)
-  \emph{The New S Language}.
-  Wadsworth & Brooks/Cole.
-}
+
+
 \seealso{
-  \code{\link[base]{duplicated}}, \code{\link[base]{unique}}
+  \code{\link[base:duplicated]{base::duplicated}}, \code{\link[base:unique]{base::unique}}
 }
+
 \examples{
-x <- c(3:5, 11:8, 8 + 0:5)
-(ux <- unique(x))
-(u2 <- unique(x, fromLast = TRUE)) # different order
-stopifnot(identical(sort(ux), sort(u2)))
+## prepare test data: 
+set.seed(9992722L, kind="Mersenne-Twister")
+x.double=model.matrix(~gl(5,8))[sample(40), ]
+x.integer=as.integer(x.double); attributes(x.integer)=attributes(x.double)
+x.logical=as.logical(x.double); attributes(x.logical)=attributes(x.double)
+x.character=as.character(x.double); attributes(x.character)=attributes(x.double)
+x.complex=as.complex(x.double); attributes(x.complex)=attributes(x.double)
+x.raw=as.raw(x.double); attributes(x.raw)=attributes(x.double)
 
-length(unique(sample(100, 100, replace = TRUE)))
-## approximately 100(1 - 1/e) = 63.21
+## compare results with base:
+stopifnot{identical(base::duplicated.matrix(x.double), 
+                    uniqueAtomMat::duplicated.matrix(x.double)
+)}
+stopifnot{identical(base::duplicated.matrix(x.integer, fromLast=TRUE), 
+                    uniqueAtomMat::duplicated.matrix(x.integer, fromLast=TRUE)
+)}
+stopifnot{identical(base::duplicated.matrix(t(x.logical), MARGIN=2L), 
+                    uniqueAtomMat::duplicated.matrix(t(x.logical), MARGIN=2L) 
+)}
+stopifnot{identical(base::duplicated.matrix(t(x.character), MARGIN=2L, fromLast=TRUE), 
+                    uniqueAtomMat::duplicated.matrix(t(x.character), MARGIN=2L, fromLast=TRUE) 
+)}
 
-unique(iris)
+stopifnot{identical(base::unique.matrix(x.complex), 
+                    uniqueAtomMat::unique.matrix(x.complex) 
+)}
+stopifnot{identical(base::unique.matrix(x.raw), 
+                    uniqueAtomMat::unique.matrix(x.raw) 
+)}
 
 
-
-
-x <- c(9:20, 1:5, 3:7, 0:8)
-## extract unique elements
-(xu <- x[!duplicated(x)])
-## similar, same elements but different order:
-(xu2 <- x[!duplicated(x, fromLast = TRUE)])
-
-## xu == unique(x) but unique(x) is more efficient
-stopifnot(identical(xu,  unique(x)),
-          identical(xu2, unique(x, fromLast = TRUE)))
-
-duplicated(iris)[140:143]
-
-duplicated(iris3, MARGIN = c(1, 3))
-anyDuplicated(iris) ## 143
-\dontshow{% array & data.frame methods:
-stopifnot(identical(anyDuplicated(iris), 143L),
-          identical(anyDuplicated(iris3, MARGIN = c(1, 3)), 143L))
+## benchmarking
+if (require(microbenchmark)){
+    print(microbenchmark(base::duplicated.matrix(dx)))
+    print(microbenchmark(uniqueAtomMat::duplicated.matrix(dx)))
+}else{
+    print(system.time(replicate(1e4L, base::duplicated.matrix(dx))))
+    print(system.time(replicate(1e4L, uniqueAtomMat::duplicated.matrix(dx))))
 }
+
+
+\dontshow{ 
+# further testing
+xna.double=x.double; 
+xna.double[1,2]=xna.double[2,3]=xna.double[3,3]=NA_real_
+xna.double[4,1]=NaN
+xna.integer=as.integer(xna.double); attributes(xna.integer)=attributes(xna.double)
+xna.logical=as.logical(xna.double); attributes(xna.logical)=attributes(xna.double)
+xna.character=as.character(xna.double); attributes(xna.character)=attributes(xna.double)
+xna.complex=as.complex(xna.double); attributes(xna.complex)=attributes(xna.double)
+xna.raw=suppressWarnings(as.raw(xna.double)); attributes(xna.raw)=attributes(xna.double)
+
+x.objs = as.vector(outer(c('x','xna'), c('double','integer','logical','character','complex','raw'),paste,sep='.'))
+test.cases=expand.grid(x = x.objs, MARGIN=1:2, fromLast=c(FALSE, TRUE), stringsAsFactors=FALSE)
+
+for(i in seq_len(nrow(test.cases))){
+    this.case=as.list(test.cases[i,])
+    this.case$x=get(this.case$x)
+    stopifnot(
+        identical(do.call(base::unique.matrix, this.case), 
+                  do.call(uniqueAtomMat::unique.matrix, this.case)),
+        identical(do.call(base::duplicated.matrix, this.case), 
+                  do.call(uniqueAtomMat::duplicated.matrix, this.case))
+    )
+}
+
+}
+
+\dontrun{
 anyDuplicated(x)
 anyDuplicated(x, fromLast = TRUE)
-
+}
 
 }
 \keyword{manip}
