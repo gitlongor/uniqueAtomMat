@@ -78,6 +78,15 @@ In contrast to the \code{base} counter-parts, characters and numeric values are 
 ## prepare test data: 
 set.seed(9992722L, kind="Mersenne-Twister")
 x.double=model.matrix(~gl(5,8))[sample(40), ]
+
+## typical uses
+unique(x.double)
+unique(x.double, fromLast=TRUE)
+unique(t(x.double), MARGIN=2)
+unique(t(x.double), MARGIN=2, fromLast=TRUE)
+
+
+## additional atomic test data
 x.integer=as.integer(x.double); attributes(x.integer)=attributes(x.double)
 x.logical=as.logical(x.double); attributes(x.logical)=attributes(x.double)
 x.character=as.character(x.double); attributes(x.character)=attributes(x.double)
