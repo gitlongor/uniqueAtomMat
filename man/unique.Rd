@@ -11,7 +11,7 @@ These S3 methods are alternative (typically much faster) implementations of cout
   
   \code{duplicated.matrix} returns a logical vector indicating which rows (or columns) are duplicated. 
 
-  \code{anyDuplicated.matrix} is an efficient shortcut for \code{any(duplicated.matrix)}.
+  \code{anyDuplicated.matrix} returns an integer indicating the index of the first duplicate row (or column) if any, and \code{0L} otherwise.
 }
 
 \usage{
@@ -29,7 +29,7 @@ These S3 methods are alternative (typically much faster) implementations of cout
   
   \item{incomparables}{a vector of values that cannot be compared, as in \code{\link[base:unique]{base::unique.matrix}}. Only when \code{incomparables=FALSE} will the code in \code{uniqueAtomMat} package be used; otherwise, the \code{base} version will be called. }
   
-  \item{fromLast}{logical indicating if duplication should be considered
+  \item{fromLast}{a logical scalar indicating if duplication should be considered
     from the last, as in \code{\link[base:unique]{base::unique.matrix}}. }
     
   \item{\dots}{arguments for particular methods.}
@@ -38,22 +38,13 @@ These S3 methods are alternative (typically much faster) implementations of cout
 }
 
 \details{
-These S3 methods are alternative implementations of couterparts in the \code{base} pacakge for atomic matrices (i.e., double, integer, logical, character, complex and raw) directly based on C++ Standard Template Library (STL) \code{std::set}. The implementation treats the whole row (or columns) \emph{vector} as the key, without converting the mode to \code{character} and collapsing them into a \emph{scalar} as done in \code{base}. Depending on the C++ compiler used on the system, STL \code{std::set} is typically implemented as a sel-balancing tree (usually a red-black tree), which takes \eqn{latex}{O[n\log{(n)}]} to find all duplicates, where \code{n=dim(x)[MARGIN]}.
+These S3 methods are alternative implementations of couterparts in the \code{base} pacakge for atomic matrices (i.e., double, integer, logical, character, complex and raw) directly based on C++ Standard Template Library (STL) \code{std::set}. The implementation treats the whole row (or columns) \emph{vector} as the key, without converting the mode to \code{character} nor collapsing them into a \emph{scalar} as done in \code{base}. Depending on the C++ compiler used on the system, STL \code{std::set} is typically implemented as a sel-balancing tree (usually a red-black tree), which takes \eqn{latex}{O[n\log{(n)}]} to find all duplicates, where \code{n=dim(x)[MARGIN]}.
 
   Missing values are regarded as equal, but \code{NaN} is not equal to
   \code{NA_real_}. 
   
   Further, in contrast to the \code{base} counter-parts, characters and numeric values are compared directly based on their internal representations; i.e., no encoding issues for characters nor rounding issues for floating-points are considered. Complex values are compared by their real and imaginary parts separately. All comparisons are exact. 
 
-
-  For the default methods, and whenever there are equivalent method
-  definitions for \code{duplicated} and \code{anyDuplicated},
-  \code{anyDuplicated(x, ...)} is a \dQuote{generalized} shortcut for
-  \code{any(duplicated(x, ...))}, in the sense that it returns the
-  \emph{index} \code{i} of the first duplicated entry \code{x[i]} if
-  there is one, and \code{0} otherwise.  Their behaviours may be
-  different when at least one of \code{duplicated} and
-  \code{anyDuplicated} has a relevant method.
 
 }
 
@@ -62,7 +53,7 @@ These S3 methods are alternative implementations of couterparts in the \code{bas
   
   \code{duplicated.matrix} returns a logical vector indicating which rows (if \code{MARGIN=1}) or columns (if \code{MARGIN=2}) are duplicated. 
 
-  \code{anyDuplicated.matrix} returns an integer indicating the index of the first duplicate if any, and \code{0L} otherwise.
+  \code{anyDuplicated.matrix} returns an integer indicating the index of the first (if \code{fromLast=FALSE}) or last (if \code{fromLast=TRUE})  duplicate  row (if \code{MARGIN=1}) or column (if \code{MARGIN=2}) if any, and \code{0L} otherwise.
 
 }
 \section{Warning}{
