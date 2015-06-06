@@ -5,8 +5,6 @@
 
 template <typename T>
 class rcVec {		// a row vec or a col vec from a column-major order matrix
-private:
-    lessAndEqual<T> le; // test less than through () and equality through identical
 public:
     T * x; 		// pointer to the first element
     int len;    // length of vector: ncol for row vec; nrow for col vec
@@ -16,11 +14,11 @@ public:
     
     inline bool operator< (const rcVec& rhs ) const {
         // elementwise comparison of two vectors from the end
-        // assuming operator== and operator< defined for type T 
+        // assuming equalTo<T>(usually operator==) and lessThan<T> (usually operator<) defined for type T 
         T L, R;
         for(int i=len-1; i>=0; i--){
-            if ( le.identical(L= *(x+eltShift*i), (R= *(rhs.x+rhs.eltShift*i))) ) continue;
-            return le(L , R);
+            if ( equalTo<T>(L= *(x+eltShift*i), (R= *(rhs.x+rhs.eltShift*i))) ) continue;
+            return lessThan<T>(L , R);
         }
         return false;
     }
