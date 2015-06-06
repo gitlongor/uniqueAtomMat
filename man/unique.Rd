@@ -110,9 +110,15 @@ stopifnot(identical(base::unique.matrix(x.raw),
 if (require(microbenchmark)){
     print(microbenchmark(base::duplicated.matrix(x.double)))
     print(microbenchmark(uniqueAtomMat::duplicated.matrix(x.double)))
+
+    print(microbenchmark(base::duplicated.matrix(x.character)))
+    print(microbenchmark(uniqueAtomMat::duplicated.matrix(x.character)))
 }else{
-    print(system.time(replicate(1e4L, base::duplicated.matrix(x.double))))
-    print(system.time(replicate(1e4L, uniqueAtomMat::duplicated.matrix(x.double))))
+    print(system.time(replicate(5e3L, base::duplicated.matrix(x.double))))
+    print(system.time(replicate(5e3L, uniqueAtomMat::duplicated.matrix(x.double))))
+
+    print(system.time(replicate(5e3L, base::duplicated.matrix(x.character))))
+    print(system.time(replicate(5e3L, uniqueAtomMat::duplicated.matrix(x.character))))
 }
 
 
