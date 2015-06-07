@@ -34,7 +34,7 @@ These S3 methods are alternative (typically much faster) implementations of cout
     
   \item{\dots}{arguments for particular methods.}
   
-  \item{MARGIN}{a numeric scalar, the matrix margin to be held fixed, as in \code{\link{apply}}. Only when \code{length(MARGIN)=1} and \code{MARGIN=1} or \code{2} will the code in \code{uniqueAtomMat} package be used; otherwise, the \code{base} version will be called.}
+  \item{MARGIN}{a numeric scalar, the matrix margin to be held fixed, as in \code{\link{apply}}. For \code{unique.matrix}, only \code{MARGIN=1} and \code{MARGIN=2} are allowed; for \code{duplicated.matrix} and \code{anyDuplicated.matrix}, \code{MARGIN=0} is also allowed. For all other cases, the implementation in the \code{base} package will be called.}
 }
 
 \details{
@@ -109,6 +109,12 @@ stopifnot(identical(base::unique.matrix(x.raw),
 ))
 stopifnot(identical(base::unique.matrix(x.factor), 
                     uniqueAtomMat::unique.matrix(x.factor) 
+))
+stopifnot(identical(base::duplicated.matrix(x.double, MARGIN=0), 
+                    uniqueAtomMat::duplicated.matrix(x.double, MARGIN=0) 
+))
+stopifnot(identical(base::anyDuplicated.matrix(x.integer, MARGIN=0), 
+                    uniqueAtomMat::anyDuplicated.matrix(x.integer, MARGIN=0) 
 ))
 
 
