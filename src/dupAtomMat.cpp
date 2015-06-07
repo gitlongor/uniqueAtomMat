@@ -52,4 +52,48 @@ SEXP dupAtomMat(SEXP x, SEXP MARGIN, SEXP fromLast)
 	return out;
 }
 
+
+
+SEXP anyDupAtomMat(SEXP x, SEXP MARGIN, SEXP fromLast)
+{/* returns a logical vector of duplicated rows of numeric matrix x */
+    SEXP out;
+	int* dim;
+	dim=INTEGER(getAttrib(x, R_DimSymbol));
+	out = PROTECT(allocVector(INTSXP, 1));
+	
+	switch (TYPEOF(x)) {
+		case REALSXP:
+			doubleVecSet.anyDuplicatedMat	(REAL(x), dim, dim+1,  INTEGER(out), *INTEGER(MARGIN)==1, (bool)(*(LOGICAL(fromLast))) );
+			break;
+		case INTSXP:  // factor type is also covered here
+			// if(!inherits(x, "factor"))
+				intVecSet.anyDuplicatedMat	(INTEGER(x), dim, dim+1,  INTEGER(out), *INTEGER(MARGIN)==1, (bool)(*(LOGICAL(fromLast))) );
+			// else {;} 
+			break;
+		case LGLSXP:
+			intVecSet.anyDuplicatedMat	(LOGICAL(x), dim, dim+1,  INTEGER(out), *INTEGER(MARGIN)==1, (bool)(*(LOGICAL(fromLast))) );
+			break;
+		case STRSXP: {
+			CharSEXP* charSexpPtr = new CharSEXP [ dim[0]*dim[1] ];
+			for(int i=dim[0]*dim[1]-1; i>=0; --i)
+				charSexpPtr[i].sexp = STRING_ELT(x, i);
+			
+			charsexpVecSet.anyDuplicatedMat	(charSexpPtr, dim, dim+1, INTEGER(out), *INTEGER(MARGIN)==1, (bool)(*(LOGICAL(fromLast))) );
+			
+			delete[] charSexpPtr;
+			break;
+		}
+		case CPLXSXP:
+			cmplxVecSet.anyDuplicatedMat	(COMPLEX(x), dim, dim+1,  INTEGER(out), *INTEGER(MARGIN)==1, (bool)(*(LOGICAL(fromLast))) );
+			break;
+		case RAWSXP:
+			rawVecSet.anyDuplicatedMat	(RAW(x), dim, dim+1,  INTEGER(out), *INTEGER(MARGIN)==1, (bool)(*(LOGICAL(fromLast))) );
+			break;
+		default:
+			error("C function 'anyDumNumMat' only accepts REALSXP, LGLSXP, INTSXP and STRSXP");
+	}
+	
+	UNPROTECT(1);
+	return out;
+}
 }
