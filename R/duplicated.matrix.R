@@ -15,5 +15,7 @@ unique.matrix=function (x, incomparables = FALSE, MARGIN = 1, fromLast = FALSE, 
 
 anyDuplicated.matrix=function(x, incomparables = FALSE, MARGIN = 1, fromLast = FALSE, ...)
 {
-    base::anyDuplicated.matrix(x, incomparables, MARGIN, fromLast, ...) ## to be implemented later
+    if (!is.matrix(x) || !is.atomic(x) || !identical(incomparables, FALSE) || (MARGIN[1L]!=1L && MARGIN[1L]!=2L) || length(MARGIN)!=1L )
+        return(base::anyDuplicated.matrix(x, incomparables, MARGIN, fromLast, ...))
+    .Call(C_anyDupAtomMat, x, as.integer(MARGIN), as.logical(fromLast))
 }

@@ -3,6 +3,7 @@
 set.seed(9992722L, kind="Mersenne-Twister")
 x.double=model.matrix(~gl(5,8))[sample(40), ]
 x.integer=as.integer(x.double); attributes(x.integer)=attributes(x.double)
+x.factor=as.factor(x.integer); dim(x.factor)=dim(x.integer); dimnames(x.factor)=dimnames(x.integer)
 x.logical=as.logical(x.double); attributes(x.logical)=attributes(x.double)
 x.character=as.character(x.double); attributes(x.character)=attributes(x.double)
 x.complex=as.complex(x.double); attributes(x.complex)=attributes(x.double)
@@ -21,12 +22,13 @@ for(testi in 0:100){
         for(j in seq_len(max(2, round(n/4))))  xna.double[sample(nr,1L), sample(nc,1L)]=NaN
     }
     xna.integer=as.integer(xna.double); attributes(xna.integer)=attributes(xna.double)
+    xna.factor=as.factor(xna.integer); dim(xna.factor)=dim(xna.integer); dimnames(xna.factor)=dimnames(xna.integer)
     xna.logical=as.logical(xna.double); attributes(xna.logical)=attributes(xna.double)
     xna.character=as.character(xna.double); attributes(xna.character)=attributes(xna.double)
     xna.complex=as.complex(xna.double); attributes(xna.complex)=attributes(xna.double)
     xna.raw=suppressWarnings(as.raw(xna.double)); attributes(xna.raw)=attributes(xna.double)
     
-    x.objs = as.vector(outer(if(testi==0) c('x','xna') else 'xna', c('double','integer','logical','character','complex','raw'),paste,sep='.'))
+    x.objs = as.vector(outer(if(testi==0) c('x','xna') else 'xna', c('double','integer','factor', 'logical','character','complex','raw'),paste,sep='.'))
     test.cases=expand.grid(x = x.objs, MARGIN=1:2, fromLast=c(FALSE, TRUE), stringsAsFactors=FALSE)
     
     for(i in seq_len(nrow(test.cases))){
@@ -36,7 +38,9 @@ for(testi in 0:100){
             identical(do.call(base::unique.matrix, this.case), 
                       do.call(uniqueAtomMat::unique.matrix, this.case)),
             identical(do.call(base::duplicated.matrix, this.case), 
-                      do.call(uniqueAtomMat::duplicated.matrix, this.case))
+                      do.call(uniqueAtomMat::duplicated.matrix, this.case)),
+            identical(do.call(base::anyDuplicated.matrix, this.case), 
+                      do.call(uniqueAtomMat::anyDuplicated.matrix, this.case))
         )
     }
 }

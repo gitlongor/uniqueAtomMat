@@ -75,10 +75,13 @@ unique(x.double)
 unique(x.double, fromLast=TRUE)
 unique(t(x.double), MARGIN=2)
 unique(t(x.double), MARGIN=2, fromLast=TRUE)
+anyDuplicated(x.double)
+anyDuplicated(x.double, fromLast = TRUE)
 
 
 ## additional atomic test data
 x.integer=as.integer(x.double); attributes(x.integer)=attributes(x.double)
+x.factor=as.factor(x.integer); dim(x.factor)=dim(x.integer); dimnames(x.factor)=dimnames(x.integer)
 x.logical=as.logical(x.double); attributes(x.logical)=attributes(x.double)
 x.character=as.character(x.double); attributes(x.character)=attributes(x.double)
 x.complex=as.complex(x.double); attributes(x.complex)=attributes(x.double)
@@ -104,6 +107,9 @@ stopifnot(identical(base::unique.matrix(x.complex),
 stopifnot(identical(base::unique.matrix(x.raw), 
                     uniqueAtomMat::unique.matrix(x.raw) 
 ))
+stopifnot(identical(base::unique.matrix(x.factor), 
+                    uniqueAtomMat::unique.matrix(x.factor) 
+))
 
 
 ## benchmarking
@@ -121,11 +127,6 @@ if (require(microbenchmark)){
     print(system.time(replicate(5e3L, uniqueAtomMat::duplicated.matrix(x.character))))
 }
 
-
-\dontrun{
-anyDuplicated(x)
-anyDuplicated(x, fromLast = TRUE)
-}
 
 }
 \keyword{manip}
