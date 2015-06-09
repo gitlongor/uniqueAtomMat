@@ -36,3 +36,27 @@ anyDuplicated.matrix=function(x, incomparables = FALSE, MARGIN = 1, fromLast = F
         .Call(C_anyDupAtomMat, x, MARGIN=1L, as.logical(fromLast))
     }
 }
+
+
+grpDuplicated = function(x, incomparables = FALSE, ...)
+{
+    UseMethod('grpDuplicated')
+}
+
+grpDuplicated.matrix=function(x, incomparables = FALSE, MARGIN = 1, fromLast = FALSE, factor=FALSE, ...)
+{
+    if (!is.matrix(x) || !is.atomic(x) || !identical(incomparables, FALSE) || ((nzeroMarg <-MARGIN[1L]!=0L) && MARGIN[1L]!=1L && MARGIN[1L]!=2L) || length(MARGIN)!=1L )
+        .NotYetImplemented() # return(base::anyDuplicated.matrix(x, incomparables, MARGIN, fromLast, ...))
+    if (nzeroMarg) {
+        ans = .Call(C_grpDupAtomMat, x, as.integer(MARGIN), as.logical(fromLast))
+    }else{
+        dx=dim(x); dim(x)=c(as.integer(prod(dx)), 1L)
+        ans = .Call(C_anyDupAtomMat, x, MARGIN=1L, as.logical(fromLast))
+    }
+    if(factor) {
+        attr(ans, 'levels') = as.character(seq_len(attr(ans, 'nlevels')))
+        class(ans) = 'factor'
+    }
+    ans
+}
+

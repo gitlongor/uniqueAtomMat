@@ -1,7 +1,8 @@
-export(duplicated.matrix, unique.matrix, anyDuplicated.matrix)
+export(duplicated.matrix, unique.matrix, anyDuplicated.matrix, grpDuplicated, grpDuplicated.matrix)
 
 S3method(unique, matrix)
 S3method(duplicated, matrix)
 S3method(anyDuplicated, matrix)
+S3method(grpDuplicated, matrix)
 
 useDynLib(uniqueAtomMat, .registration =TRUE, .fixes="C_")
