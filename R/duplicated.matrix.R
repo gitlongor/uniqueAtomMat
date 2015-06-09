@@ -1,7 +1,14 @@
-duplicated.matrix = function (x, incomparables = FALSE, MARGIN = 1L, fromLast = FALSE, ...)
+duplicated.matrix = function (x, incomparables = FALSE, MARGIN = 1L, fromLast = FALSE, round=FALSE, ...)
 {
 	if (!is.matrix(x) || !is.atomic(x) || !identical(incomparables, FALSE) || ((nzeroMarg <-MARGIN[1L]!=0L) && MARGIN[1L]!=1L && MARGIN[1L]!=2L) || length(MARGIN)!=1L )
 		return(base::duplicated.matrix(x, incomparables, MARGIN, fromLast, ...))
+    
+    if(is.logical(round) && round && is.double(x) ){
+        x=round(x, .Call(C_dbl_dig))
+    }else if (is.numeric(round) && is.double(x) ){
+        x=round(x, round(round))
+    }
+    
 	if (nzeroMarg) {
         .Call(C_dupAtomMat, x, as.integer(MARGIN), as.logical(fromLast))
 	}else{
@@ -17,18 +24,32 @@ duplicated.matrix = function (x, incomparables = FALSE, MARGIN = 1L, fromLast = 
 	}
 }
 
-unique.matrix=function (x, incomparables = FALSE, MARGIN = 1, fromLast = FALSE, ...)
+unique.matrix=function (x, incomparables = FALSE, MARGIN = 1, fromLast = FALSE, round=FALSE, ...)
 {
 	if (!is.matrix(x) || !is.atomic(x) || !identical(incomparables, FALSE) || (MARGIN[1L]!=1L && MARGIN[1L]!=2L) || length(MARGIN)!=1L )
 		return(base::unique.matrix(x, incomparables, MARGIN, fromLast, ...))
-	dups=.Call(C_dupAtomMat, x, as.integer(MARGIN), as.logical(fromLast))
+
+	if(is.logical(round) && round && is.double(x) ){
+	    x = round(x, .Call(C_dbl_dig))
+    }else if (is.numeric(round) && is.double(x) ){
+	    x = round(x, round(round))
+	}
+    
+    dups=.Call(C_dupAtomMat, x, as.integer(MARGIN), as.logical(fromLast))
 	if(MARGIN==1L) x[!dups,,drop=FALSE] else x[,!dups,drop=FALSE]
 }
 
-anyDuplicated.matrix=function(x, incomparables = FALSE, MARGIN = 1, fromLast = FALSE, ...)
+anyDuplicated.matrix=function(x, incomparables = FALSE, MARGIN = 1, fromLast = FALSE, round=FALSE, ...)
 {
     if (!is.matrix(x) || !is.atomic(x) || !identical(incomparables, FALSE) || ((nzeroMarg <-MARGIN[1L]!=0L) && MARGIN[1L]!=1L && MARGIN[1L]!=2L) || length(MARGIN)!=1L )
         return(base::anyDuplicated.matrix(x, incomparables, MARGIN, fromLast, ...))
+
+    if(is.logical(round) && round && is.double(x) ){
+        x=round(x, .Call(C_dbl_dig))
+    }else if (is.numeric(round) && is.double(x) ){
+        x=round(x, round(round))
+    }
+    
     if (nzeroMarg) {
         .Call(C_anyDupAtomMat, x, as.integer(MARGIN), as.logical(fromLast))
     }else{

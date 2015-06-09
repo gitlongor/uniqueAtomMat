@@ -16,11 +16,11 @@ These S3 methods are alternative (typically much faster) implementations of cout
 
 \usage{
 \method{unique}{matrix}(x, incomparables = FALSE, MARGIN = 1,
-       fromLast = FALSE, \dots)
+       fromLast = FALSE, round=FALSE, \dots)
 \method{duplicated}{matrix}(x, incomparables = FALSE, MARGIN = 1,
-           fromLast = FALSE, \dots)
+           fromLast = FALSE, round=FALSE, \dots)
 \method{anyDuplicated}{matrix}(x, incomparables = FALSE,
-           MARGIN = 1, fromLast = FALSE, \dots)
+           MARGIN = 1, fromLast = FALSE, round=FALSE, \dots)
 }
 
 
@@ -35,6 +35,8 @@ These S3 methods are alternative (typically much faster) implementations of cout
   \item{\dots}{arguments for particular methods.}
   
   \item{MARGIN}{a numeric scalar, the matrix margin to be held fixed, as in \code{\link{apply}}. For \code{unique.matrix}, only \code{MARGIN=1} and \code{MARGIN=2} are allowed; for \code{duplicated.matrix} and \code{anyDuplicated.matrix}, \code{MARGIN=0} is also allowed. For all other cases, the implementation in the \code{base} package will be called.}
+  
+  \item{round}{a logical scalar only applicable to double \code{x}, indicating whether \code{x} should be rounded to \code{DBL_DIG} decimal digits before comparing for equality, where \code{DBL_DIG} is the ISO C constant that is also used by \code{\link{as.character}}. The default value is \code{round=FALSE}, whose behavior is \emph{different} than the \code{base} counterparts. }
 }
 
 \details{
@@ -43,7 +45,7 @@ These S3 methods are alternative implementations of couterparts in the \code{bas
   Missing values are regarded as equal, but \code{NaN} is not equal to
   \code{NA_real_}. 
   
-  Further, in contrast to the \code{base} counter-parts, characters and numeric values are compared directly based on their internal representations; i.e., no encoding issues for characters nor rounding issues for floating-points are considered. Complex values are compared by their real and imaginary parts separately. All comparisons are exact. 
+  Further, in contrast to the \code{base} counterparts, characters and numeric values are compared directly based on their internal representations; i.e., no encoding issues for characters nor rounding issues for floating-points are considered. Complex values are compared by their real and imaginary parts separately. All comparisons are exact. 
 
 
 }
@@ -57,7 +59,7 @@ These S3 methods are alternative implementations of couterparts in the \code{bas
 
 }
 \section{Warning}{
-In contrast to the \code{base} counter-parts, characters and numeric values are compared directly based on their internal representations; i.e., no encoding issues for characters nor rounding issues for floating-points are considered.  Complex values are compared by their real and imaginary parts separately. All comparisons are exact.   \link{Long vectors} are not supported yet. 
+In contrast to the \code{base} counterparts, characters and numeric values are compared directly based on their internal representations; i.e., no encoding issues for characters nor rounding issues for floating-points are considered.  Complex values are compared by their real and imaginary parts separately. All comparisons are exact.   \link{Long vectors} are not supported yet. 
 }
 
 

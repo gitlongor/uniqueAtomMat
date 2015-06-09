@@ -1,3 +1,4 @@
+#include <cfloat>   /* DBL_DIG */
 #include "rcSet.h"
 
 // instantiation of global objects:
@@ -8,6 +9,13 @@ vecSet<Rcomplex>		cmplxVecSet;
 vecSet<unsigned char>	rawVecSet; 		// Rbyte is an alias of unsigned char
 
 extern "C" {
+SEXP dbl_dig()
+{
+    SEXP out = PROTECT(allocVector(INTSXP, 1));
+    INTEGER(out)[0] = DBL_DIG;
+    UNPROTECT(1);
+    return out;
+}
 
 SEXP dupAtomMat(SEXP x, SEXP MARGIN, SEXP fromLast)
 {/* returns a logical vector of duplicated rows of numeric matrix x */
@@ -18,8 +26,8 @@ SEXP dupAtomMat(SEXP x, SEXP MARGIN, SEXP fromLast)
 	
 	switch (TYPEOF(x)) {
 		case REALSXP:
-			doubleVecSet.duplicatedMat	(REAL(x), dim, dim+1,  LOGICAL(out), *INTEGER(MARGIN)==1, (bool)(*(LOGICAL(fromLast))) );
-			break;
+    		doubleVecSet.duplicatedMat	(REAL(x), dim, dim+1,  LOGICAL(out), *INTEGER(MARGIN)==1, (bool)(*(LOGICAL(fromLast))) );
+    		break;
 		case INTSXP:  // factor type is also covered here
 			// if(!inherits(x, "factor"))
 				intVecSet.duplicatedMat	(INTEGER(x), dim, dim+1,  LOGICAL(out), *INTEGER(MARGIN)==1, (bool)(*(LOGICAL(fromLast))) );
