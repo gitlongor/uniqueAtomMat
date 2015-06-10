@@ -59,8 +59,15 @@ grpDuplicated.matrix=function(x, incomparables = FALSE, factor=FALSE, MARGIN = 1
     if (nzeroMarg) {
         ans = .Call(C_grpDupAtomMat, x, as.integer(MARGIN), as.logical(fromLast))
     }else{
-        dx=dim(x); dim(x)=c(as.integer(prod(dx)), 1L)
-        ans = .Call(C_anyDupAtomMat, x, MARGIN=1L, as.logical(fromLast))
+        att=attributes(x); dim(x)=c(as.integer(prod(att$dim)), 1L)
+        ans = .Call(C_grpDupAtomMat, x, MARGIN=1L, as.logical(fromLast))
+        if(any(att$class=='factor')){
+            att$class= setdiff(att$class, c('ordered','factor'))
+            if(length(att$class)==0L) att$class=NULL
+            att$levels=NULL
+        }
+        att$nlevels = attr(ans, 'nlevels')
+        attributes(ans)=att
     }
     if(factor) {
         attr(ans, 'levels') = as.character(seq_len(attr(ans, 'nlevels')))
