@@ -38,12 +38,21 @@ anyDuplicated.matrix=function(x, incomparables = FALSE, MARGIN = 1, fromLast = F
 }
 
 
-grpDuplicated = function(x, incomparables = FALSE, ...)
+grpDuplicated = function(x, incomparables = FALSE, factor=FALSE, ...)
 {
     UseMethod('grpDuplicated')
 }
 
-grpDuplicated.matrix=function(x, incomparables = FALSE, MARGIN = 1, fromLast = FALSE, factor=FALSE, ...)
+grpDuplicated.default=function(x, incomparables = FALSE, factor=FALSE, fromLast = FALSE, ...)
+{
+    if ((!is.vector(x) && !is.factor(x)) || !is.atomic(x) || !identical(incomparables, FALSE) )
+        .NotYetImplemented() # return(base::anyDuplicated.matrix(x, incomparables, MARGIN, fromLast, ...))
+    dim(x)=c(length(x), 1L)
+    grpDuplicated.matrix(x, incomparables, MARGIN=1L, fromLast, factor,...)
+}
+
+
+grpDuplicated.matrix=function(x, incomparables = FALSE, factor=FALSE, MARGIN = 1, fromLast = FALSE, ...)
 {
     if (!is.matrix(x) || !is.atomic(x) || !identical(incomparables, FALSE) || ((nzeroMarg <-MARGIN[1L]!=0L) && MARGIN[1L]!=1L && MARGIN[1L]!=2L) || length(MARGIN)!=1L )
         .NotYetImplemented() # return(base::anyDuplicated.matrix(x, incomparables, MARGIN, fromLast, ...))
