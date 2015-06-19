@@ -1,6 +1,6 @@
 Package: uniqueAtomMat
 Version: 0.1-0
-Date: 2015-06-10
+Date: 2015-06-19
 Title: Finding Unique or Duplicated Rows or Columns for Atomic Matrices
 Authors@R: person("Long", "Qu", role=c("aut", "cre"), email="long.qu@wright.edu")
 Depends: R (>= 3.1.2)
@@ -9,3 +9,5 @@ Suggests: microbenchmark
 Description: An alternative implementation and extension (grpDuplicated) of base::duplicated.matrix, base:anyDuplicated.matrix and base::unique.matrix for matrices of atomic mode, avoiding the time consuming collapse of the matrix into a character vector. 
 License: GPL (>= 2)
 NeedsCompilation: yes
+URL: https://github.com/gitlongor/uniqueAtomMat
+BugReports: https://github.com/gitlongor/uniqueAtomMat/issues

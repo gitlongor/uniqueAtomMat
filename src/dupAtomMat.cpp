@@ -104,7 +104,7 @@ SEXP anyDupAtomMat(SEXP x, SEXP MARGIN, SEXP fromLast)
 }
 
 SEXP grpDupAtomMat(SEXP x, SEXP MARGIN, SEXP fromLast)
-{/* returns a logical vector of duplicated rows of numeric matrix x */
+{/* returns an integer vector of duplicated rows of numeric matrix x */
     SEXP out;
 	int* dim;
     int nGrps;

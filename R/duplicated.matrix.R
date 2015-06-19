@@ -45,18 +45,22 @@ grpDuplicated = function(x, incomparables = FALSE, factor=FALSE, ...)
 
 grpDuplicated.default=function(x, incomparables = FALSE, factor=FALSE, fromLast = FALSE, ...)
 {
-    if ((!is.vector(x) && !is.factor(x)) || !is.atomic(x) || !identical(incomparables, FALSE) )
+    if ((!is.vector(x) && !is.factor(x)) || !is.atomic(x) || !identical(incomparables, FALSE) ){
+		message('"grpDuplicated" currently only supports atomic vectors/matrices with "incomarables=FALSE"')
         .NotYetImplemented() # return(base::anyDuplicated.matrix(x, incomparables, MARGIN, fromLast, ...))
+	}
     dim(x)=c(length(x), 1L)
-    grpDuplicated.matrix(x, incomparables, MARGIN=1L, fromLast, factor,...)
+    grpDuplicated.matrix(x, incomparables, factor, MARGIN=1L, fromLast, ...)
 }
 
 
 grpDuplicated.matrix=function(x, incomparables = FALSE, factor=FALSE, MARGIN = 1, fromLast = FALSE, ...)
 {
-    if (!is.matrix(x) || !is.atomic(x) || !identical(incomparables, FALSE) || ((nzeroMarg <-MARGIN[1L]!=0L) && MARGIN[1L]!=1L && MARGIN[1L]!=2L) || length(MARGIN)!=1L )
+    if (!is.matrix(x) || !is.atomic(x) || !identical(incomparables, FALSE) || ((nzeroMarg <-MARGIN[1L]!=0L) && MARGIN[1L]!=1L && MARGIN[1L]!=2L) || length(MARGIN)!=1L ) {
+		message('"grpDuplicated" currently only supports atomic vectors/matrices with "incomarables=FALSE"')
         .NotYetImplemented() # return(base::anyDuplicated.matrix(x, incomparables, MARGIN, fromLast, ...))
-    if (nzeroMarg) {
+    }
+	if (nzeroMarg) {
         ans = .Call(C_grpDupAtomMat, x, as.integer(MARGIN), as.logical(fromLast))
     }else{
         att=attributes(x); dim(x)=c(as.integer(prod(att$dim)), 1L)
