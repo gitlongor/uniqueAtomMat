@@ -1,3 +1,5 @@
+stopifnot(require(uniqueAtomMat))
+
 ## testing helper functions
 is.permMat=function(x)
 {
