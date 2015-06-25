@@ -1,3 +1,4 @@
+R_CHECK_TIMINGS_ = Sys.getenv('_R_CHECK_TIMINGS_') != ''
 
 ## prepare test data: 
 set.seed(9992722L, kind="Mersenne-Twister")
@@ -14,8 +15,9 @@ x.raw=as.raw(x.double); attributes(x.raw)=attributes(x.double)
 
 
 # further testing
+Nreps=if(R_CHECK_TIMINGS_) 10L else 500L
 nr=nrow(x.double) ; nc=ncol(x.double); n=nr*nc;
-for(testi in 0:100){
+for(testi in 0:Nreps){
     xna.double=x.double; 
     if(testi==0){
         xna.double[1,2]=xna.double[2,3]=xna.double[3,3]=NA_real_

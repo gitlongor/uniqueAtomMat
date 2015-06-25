@@ -1,3 +1,5 @@
+R_CHECK_TIMINGS_ = Sys.getenv('_R_CHECK_TIMINGS_') != ''
+
 stopifnot(require(uniqueAtomMat))
 
 
@@ -172,8 +174,10 @@ for(testi in 0:100){
 			    stopifnot(testEquivalence(trt.original, this.ans))
 		    }
 		}
-        stopifnot(identical(do.call(grpDuplicated.matrix.R, this.case), this.ans))
-		
+        if(!R_CHECK_TIMINGS_ ) {
+            stopifnot(identical(do.call(grpDuplicated.matrix.R, this.case), this.ans))
+        }
+        
         if(this.case$factor) stopifnot(is.factor(this.ans))
     }
 }
