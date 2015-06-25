@@ -1,5 +1,6 @@
 stopifnot(require(uniqueAtomMat))
 
+
 ## testing helper functions
 is.permMat=function(x)
 {
@@ -43,6 +44,46 @@ testEquivalence=function(x,y)
     is.permMat( table(x, y) != 0 )
 }
 
+grpDuplicated.matrix.R=function(x, incomparables = FALSE, factor=FALSE, MARGIN = 1, fromLast = FALSE, ...)
+{
+    if (!is.matrix(x) || !is.atomic(x) || !identical(incomparables, FALSE) || ((nzeroMarg <-MARGIN[1L]!=0L) && MARGIN[1L]!=1L && MARGIN[1L]!=2L) || length(MARGIN)!=1L ) {
+        message('"grpDuplicated.matrix" currently only supports atomic vectors/matrices with "incomarables=FALSE"')
+        .NotYetImplemented() # return(base::anyDuplicated.matrix(x, incomparables, MARGIN, fromLast, ...))
+    }
+    if (nzeroMarg) {
+        #ans = .Call(C_grpDupAtomMat, x, as.integer(MARGIN), as.logical(fromLast))
+        if(MARGIN==1){
+            uniq=base::unique.matrix(x, fromLast=fromLast)
+            ans=integer(NROW(x))
+            idces=grp=seq_len(NROW(uniq))
+            if(fromLast) idces=rev(idces)
+            for(i in seq_along(idces)) {
+                for(j in seq_along(ans)){
+                    if(identical(uniq[idces[i],],  x[j,])) ans[j]=grp[i]
+                }
+            }
+            attr(ans, 'nlevels')=NROW(uniq)
+        }else{
+            ans=grpDuplicated.matrix.R(t(x), incomparables, factor=FALSE, MARGIN=1, fromLast)
+        }
+    }else{
+        att=attributes(x); dim(x)=c(as.integer(prod(att$dim)), 1L)
+        #ans = .Call(C_grpDupAtomMat, x, MARGIN=1L, as.logical(fromLast))
+        ans = grpDuplicated.matrix.R(x, incomparables, factor=FALSE, MARGIN=1, fromLast)
+        if(any(att$class=='factor')){
+            att$class= setdiff(att$class, c('ordered','factor','matrix'))
+            if(length(att$class)==0L) att$class=NULL
+            att$levels=NULL
+        }
+        att$nlevels = attr(ans, 'nlevels')
+        attributes(ans)=att
+    }
+    if(factor) {
+        attr(ans, 'levels') = as.character(seq_len(attr(ans, 'nlevels')))
+        class(ans) = 'factor'
+    }
+    ans
+}
 
 
 ## prepare example data
@@ -130,12 +171,9 @@ for(testi in 0:100){
 			}else{
 			    stopifnot(testEquivalence(trt.original, this.ans))
 		    }
-		}else if(this.case$MARGIN==2) {
-
-            
-		}else{
-            
 		}
+        stopifnot(identical(do.call(grpDuplicated.matrix.R, this.case), this.ans))
+		
         if(this.case$factor) stopifnot(is.factor(this.ans))
     }
 }
