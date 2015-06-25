@@ -1,10 +1,4 @@
-## prepare example data
-set.seed(9992722L, kind="Mersenne-Twister")
-trt.original=gl(5,8)[sample(40)]
-
-## equivalent recoding: 
-(trt.equivalent=grpDuplicated(trt.original, factor=TRUE))
-
+## testing helper functions
 is.permMat=function(x)
 {
 	ans=FALSE
@@ -42,19 +36,29 @@ is.permMat=function(x)
 	
 	TRUE
 }
-stopifnot(is.permMat( table(trt.original, trt.equivalent)!= 0 ))
+testEquivalence=function(x,y)
+{
+    is.permMat( table(x, y) != 0 )
+}
+
+
+
+## prepare example data
+set.seed(9992722L, kind="Mersenne-Twister")
+trt.original=gl(5,8)[sample(40)]
+
+## equivalent recoding: 
+(trt.equivalent=grpDuplicated(trt.original, factor=TRUE))
+
+stopifnot(testEquivalence(trt.original, trt.equivalent) )
 
 ## equivalent recoding based on a design matrix
 x.double=model.matrix(~trt.original)
 (trt.equivalent=grpDuplicated(x.double, factor=TRUE))
 
 ## check equivalence: should be a permutation matrix:
-stopifnot(is.permMat( table(trt.original, trt.equivalent) != 0 ))
+stopifnot(testEquivalence(trt.original, trt.equivalent) )
 
-testEquivalence=function(x,y)
-{
-  is.permMat( table(x, y) != 0 )
-}
 
 ## prepare more test data: 
 set.seed(9992722L, kind="Mersenne-Twister")
@@ -63,6 +67,8 @@ x.double=model.matrix(~trt.original)
 x.integer=as.integer(x.double); attributes(x.integer)=attributes(x.double)
 x.factor=as.factor(x.integer); dim(x.factor)=dim(x.integer); dimnames(x.factor)=dimnames(x.integer)
 x.ordered=as.factor(x.integer); dim(x.ordered)=dim(x.integer); dimnames(x.ordered)=dimnames(x.integer)
+class(x.factor)=c('matrix', class(x.factor))
+class(x.ordered)=c('matrix', class(x.ordered))
 x.logical=as.logical(x.double); attributes(x.logical)=attributes(x.double)
 x.character=as.character(x.double); attributes(x.character)=attributes(x.double)
 x.complex=as.complex(x.double); attributes(x.complex)=attributes(x.double)
@@ -82,6 +88,8 @@ for(testi in 0:100){
     xna.integer=as.integer(xna.double); attributes(xna.integer)=attributes(xna.double)
     xna.factor=as.factor(xna.integer); dim(xna.factor)=dim(xna.integer); dimnames(xna.factor)=dimnames(xna.integer)
     xna.ordered=as.ordered(xna.integer); dim(xna.ordered)=dim(xna.integer); dimnames(xna.ordered)=dimnames(xna.integer)
+    class(xna.factor)=c('matrix', class(xna.factor))
+    class(xna.ordered)=c('matrix', class(xna.ordered))
     xna.logical=as.logical(xna.double); attributes(xna.logical)=attributes(xna.double)
     xna.character=as.character(xna.double); attributes(xna.character)=attributes(xna.double)
     xna.complex=as.complex(xna.double); attributes(xna.complex)=attributes(xna.double)
@@ -96,8 +104,8 @@ for(testi in 0:100){
 		this.case.nofact=this.case; this.case.nofact$factor=NULL
 		
 		this.ans= do.call(uniqueAtomMat::grpDuplicated, this.case)
-        if("xna"%in%this.case$x ){
-			if(this.case$MARGIN!=0) {
+		if(this.case$MARGIN==1) {
+		    if(any(grepl("^xna", as.character(test.cases$x[i]) ) ) ) {
 				## test: # of groups
 				stopifnot(
 					attr(this.ans, 'nlevels') == dim(do.call(base::unique, this.case.nofact))[this.case$MARGIN]
@@ -107,20 +115,26 @@ for(testi in 0:100){
 				for(i in seq_len(attr(this.ans, 'nlevels'))){
 					idx=which(i==this.ans)
 					id1st[i]=idx[1]
-					tmpx=get(this.case$x)
-					tmpx = if(MARGIN==1) tmpx[idx, , drop=FALSE] else tmpx[,,idx,drop=FALSE]
+					tmpx=this.case$x
+					tmpx = if(this.case$MARGIN==1) tmpx[idx, , drop=FALSE] else tmpx[,,idx,drop=FALSE]
 					this.case.nofact$x='tmpx'
 					stopifnot(sum(!do.call(base::duplicated, this.case.nofact))==1)
 				}
 				## test: distinctness among groups
-				tmpx=get(this.case$x)
-				tmpx = if(MARGIN==1) tmpx[id1st, , drop=FALSE] else tmpx[,,id1st,drop=FALSE]
-				this.case.nofact$x='tmpx'
-				stopifnot(identical(tmpx, base::unique, this.case.nofact))
-			}
+				tmpx=this.case$x
+				tmpx = if(this.case$MARGIN==1) tmpx[id1st, , drop=FALSE] else tmpx[,,id1st,drop=FALSE]
+				this.case.nofact$x=tmpx
+				stopifnot(identical(tmpx, do.call(base::unique, this.case.nofact)))
+			}else{
+			    stopifnot(testEquivalence(trt.original, this.ans))
+		    }
+		}else if(this.case$MARGIN==2) {
+
+            
 		}else{
-			stopifnot(testEquivalence(trt.orginal, this.ans))
+            
 		}
         if(this.case$factor) stopifnot(is.factor(this.ans))
     }
 }
+

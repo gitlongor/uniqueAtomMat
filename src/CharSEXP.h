@@ -11,7 +11,7 @@
 /* 
 	NOTE: R_NaString is a different SEXP than mkChar("NA"), but holding the same string "NA". 
 		  We will treat R_NaString to be smaller than every usual string, including mkChar("NA"). 
-          Real NaN beomes mkChar("NaN") by as.character().
+          Real NaN becomes mkChar("NaN") by as.character().
 */
 
 class CharSEXP{
