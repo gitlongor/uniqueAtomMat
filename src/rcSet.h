@@ -15,7 +15,7 @@ public:
     inline bool operator< (const rcVec& rhs ) const {
         // elementwise comparison of two vectors from the end
         // assuming equalTo<T>(usually operator==) and lessThan<T> (usually operator<) defined for type T 
-        // also assuming operator= available for type T
+        // also assuming operator= available for type T (Rcomplex is a struct of two doubles; SEXP in CharSEXP should be fine)
         T L, R;
         for(int i=len-1; i>=0; i--){
             if ( equalTo<T>(L= *(x+eltShift*i), (R= *(rhs.x+rhs.eltShift*i))) ) continue;
