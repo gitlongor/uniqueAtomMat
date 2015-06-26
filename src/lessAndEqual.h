@@ -18,31 +18,31 @@
  *  (3) CharSEXP, where NA's are properly handled by operator<.
  */
 template <typename T>
-inline bool lessThan (const T& lhs, const T& rhs) { return lhs < rhs;}
+ bool lessThan (const T& lhs, const T& rhs) { return lhs < rhs;}
 template <typename T>
-inline bool equalTo (const T& lhs, const T& rhs) { return lhs == rhs;}
+ bool equalTo (const T& lhs, const T& rhs) { return lhs == rhs;}
 
 
 /* double Assumptions: NaN < NA_real_ < -Inf < Finite numbers < Inf */
 template <>
-inline bool lessThan<double>(const double& lhs, const double& rhs) 
+ bool lessThan<double>(const double& lhs, const double& rhs) 
 {
-    if (R_FINITE(lhs) && R_FINITE(rhs)) return lhs< rhs; // probably the most common case
+    if (R_FINITE(lhs) && R_FINITE(rhs)) return lhs< rhs; // probably the most common case (both finite)
     
-    bool rhsTest = R_IsNaN(rhs);
-    if (R_IsNaN(lhs)) return !rhsTest;
+    bool rhsTest = R_IsNaN(rhs);        // rhs = NaN    
+    if (R_IsNaN(lhs)) return !rhsTest; // lhs = NaN
     
-    rhsTest = rhsTest || ISNA(rhs);
-    if (ISNA(lhs)) return !rhsTest;
+    rhsTest = rhsTest || ISNA(rhs);     // rhs <= NA_real_
+    if (ISNA(lhs)) return !rhsTest;     // lhs = NA
     
-    rhsTest = rhsTest || (rhs == R_NegInf);
-    if (lhs == R_NegInf) return !rhsTest;
+    rhsTest = rhsTest || (rhs == R_NegInf); // rhs <= -Inf
+    if (lhs == R_NegInf) return !rhsTest;   // lhs = -Inf
     
-    return !(rhsTest || lhs < rhs); 
-    
+    if(rhsTest) return false;       // lhs is finite or +Inf but rhs <= -Inf 
+    return R_FINITE(lhs);           // lhs is finite or +Inf but rhs is +Inf
 }
 template <>
-inline bool equalTo<double> (const double& lhs, const double& rhs) 
+ bool equalTo<double> (const double& lhs, const double& rhs) 
 {return(
     (lhs == rhs) ||
     (ISNA(lhs) && ISNA(rhs)) ||
@@ -53,13 +53,13 @@ inline bool equalTo<double> (const double& lhs, const double& rhs)
 
 
 template <>
-inline bool lessThan<Rcomplex> (const Rcomplex& lhs, const Rcomplex& rhs) 
+ bool lessThan<Rcomplex> (const Rcomplex& lhs, const Rcomplex& rhs) 
 {
     if (equalTo<double>(lhs.r , rhs.r)) return lessThan<double>(lhs.i , rhs.i);
     return lessThan<double>(lhs.r , rhs.r);
 }
 template <>
-inline bool equalTo<Rcomplex> (const Rcomplex& lhs, const Rcomplex& rhs) 
+ bool equalTo<Rcomplex> (const Rcomplex& lhs, const Rcomplex& rhs) 
 {
     return equalTo<double>(lhs.r, rhs.r) && equalTo<double>(lhs.i, rhs.i) ;
 }
