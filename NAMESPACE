@@ -1,4 +1,11 @@
-export(duplicated.matrix, unique.matrix, anyDuplicated.matrix, grpDuplicated, grpDuplicated.matrix)
+export(
+  duplicated.matrix, 
+  unique.matrix, 
+  anyDuplicated.matrix, 
+  grpDuplicated, 
+  grpDuplicated.default, 
+  grpDuplicated.matrix
+)
 
 S3method(unique, matrix)
 S3method(duplicated, matrix)
