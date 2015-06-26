@@ -11,6 +11,7 @@ x.matordered=x.ordered; class(x.matordered)=c('matrix',class(x.ordered))
 x.logical=as.logical(x.double); attributes(x.logical)=attributes(x.double)
 x.character=as.character(x.double); attributes(x.character)=attributes(x.double)
 x.complex=as.complex(x.double); attributes(x.complex)=attributes(x.double)
+x.complexi=x.double*1i; attributes(x.complexi)=attributes(x.double)
 x.raw=as.raw(x.double); attributes(x.raw)=attributes(x.double)
 
 
@@ -34,9 +35,10 @@ for(testi in 0:Nreps){
     xna.logical=as.logical(xna.double); attributes(xna.logical)=attributes(xna.double)
     xna.character=as.character(xna.double); attributes(xna.character)=attributes(xna.double)
     xna.complex=as.complex(xna.double); attributes(xna.complex)=attributes(xna.double)
+    xna.complexi=xna.double*1i; attributes(xna.complexi)=attributes(xna.double)
     xna.raw=suppressWarnings(as.raw(xna.double)); attributes(xna.raw)=attributes(xna.double)
     
-    x.objs = as.vector(outer(if(testi==0) c('x','xna') else 'xna', c('double','integer','factor', 'ordered','matfactor', 'matordered','logical','character','complex','raw'),paste,sep='.'))
+    x.objs = as.vector(outer(if(testi==0) c('x','xna') else 'xna', c('double','integer','factor', 'ordered','matfactor', 'matordered','logical','character','complex','complexi','raw'),paste,sep='.'))
     test.cases=expand.grid(x = x.objs, MARGIN=0:2, fromLast=c(FALSE, TRUE), stringsAsFactors=FALSE)
     
     for(i in seq_len(nrow(test.cases))){
