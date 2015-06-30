@@ -9,6 +9,5 @@ Suggests: microbenchmark
 Description: An alternative implementation and extension (grpDuplicated) of base::duplicated.matrix, base:anyDuplicated.matrix and base::unique.matrix for matrices of atomic mode, avoiding the time consuming collapse of the matrix into a character vector. 
 License: GPL (>= 2)
 NeedsCompilation: yes
-SystemRequirements: C++11
 URL: https://github.com/gitlongor/uniqueAtomMat
 BugReports: https://github.com/gitlongor/uniqueAtomMat/issues
