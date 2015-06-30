@@ -1,0 +1,8 @@
+cxx1xRslt =`"${R_HOME}/bin/R" CMD config CXX11X`
+if test -n "$cxx1xRslt"
+then
+echo "CXX_STD = CXX11" > src/Makevars
+echo "#define HAVE_CXX1X" > src/config.h
+else
+echo "#undef HAVE_CXX1X" > src/config.h
+fi
