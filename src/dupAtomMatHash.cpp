@@ -1,3 +1,5 @@
+#include "config.h"
+#ifdef HAVE_CXX1X
 #include "rcSetHash.h"
 
 // instantiation of global objects:
@@ -152,3 +154,5 @@ SEXP grpDupAtomMatHash(SEXP x, SEXP MARGIN, SEXP fromLast)
 }
 
 }
+
+#endif
