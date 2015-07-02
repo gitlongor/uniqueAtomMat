@@ -10,8 +10,10 @@ Grouping by duplicated elements
 }
 \usage{
 grpDuplicated(x, incomparables = FALSE, factor=FALSE, ...)
-\method{grpDuplicated}{default}(x, incomparables = FALSE, factor=FALSE, fromLast=FALSE, \dots)
-\method{grpDuplicated}{matrix}(x, incomparables = FALSE, factor=FALSE, MARGIN = 1, fromLast = FALSE,  \dots)
+\method{grpDuplicated}{default}(x, incomparables = FALSE, factor=FALSE, 
+	fromLast=FALSE, signif=Inf, \dots)
+\method{grpDuplicated}{matrix}(x, incomparables = FALSE, factor=FALSE, MARGIN = 1, 
+	fromLast = FALSE, signif=Inf, \dots)
 }
 \arguments{
   \item{x}{a vector or matrix of atomic mode \code{"numeric"}, \code{"integer"}, \code{"logical"}, \code{"complex"}, \code{"character"} or \code{"raw"}. Currently, non-atomic vector/matrix is not supported. 
@@ -27,6 +29,8 @@ grpDuplicated(x, incomparables = FALSE, factor=FALSE, ...)
   \item{\dots}{arguments for particular methods.}
   
   \item{MARGIN}{a numeric scalar, the matrix margin to be held fixed, as in \code{\link{apply}}. Only \code{MARGIN=0}, \code{MARGIN=1} and \code{MARGIN=2} are allowed values.}
+  
+  \item{signif}{a numerical scalar only applicable to numeric or complex \code{x}. If \code{signif=NULL}, then \code{x} will first be passed to \code{\link{signif}} function with the number of significant digits being the \code{C} constant \code{DBL_DIG}, as explained in \code{\link{as.character}}. If \code{signif=Inf} (which is the default value), then \code{x} is untouched before finding duplicates. If \code{signif} is any other number, it  specifies the required number of significant digits for \code{\link{signif}} function. }  
 }
 \details{
 For atomic \code{x}, the implementation is based on \code{std::map} in C++ standard template library. 
