@@ -7,7 +7,7 @@
 #define RANDBIT8  0x8B
 #define RANDBIT16 0x135E
 #define RANDBIT32 0x183B2DEA
-#define RANDBIT64 0x7EC95B50E031CBAC
+#define RANDBIT64 0x3A0A3F58E697236C
 union {
 	uint_fast8_t ui8;
 	uint_fast16_t ui16;

@@ -17,7 +17,7 @@ grpDuplicated(x, incomparables = FALSE, factor=FALSE, ...)
   \item{x}{a vector or matrix of atomic mode \code{"numeric"}, \code{"integer"}, \code{"logical"}, \code{"complex"}, \code{"character"} or \code{"raw"}. Currently, non-atomic vector/matrix is not supported. 
   }
   
-  \item{incomparables}{a vector of values that cannot be compared, as in \code{\link[base:unique]{base::unique.matrix}}.  Only \code{FALSE} is suppored.  }
+  \item{incomparables}{a vector of values that cannot be compared, as in \code{\link[base:unique]{base::unique.matrix}}.  Only \code{FALSE} is supported.  }
   
   \item{factor}{a logical scalar, indicating if the result should be given as an integer vector (default) or a factor. }
   
@@ -29,7 +29,7 @@ grpDuplicated(x, incomparables = FALSE, factor=FALSE, ...)
   \item{MARGIN}{a numeric scalar, the matrix margin to be held fixed, as in \code{\link{apply}}. Only \code{MARGIN=0}, \code{MARGIN=1} and \code{MARGIN=2} are allowed values.}
 }
 \details{
-For atomic \code{x}, the implementation is based on \code{std::map} in C++ standard template library. 
+For atomic \code{x}, the implementation is based on \code{std::map} in C++98 standard template library on systems with empty \code{R CMD config CXX1X}, and based on \code{std::unordered_map} otherwise. 
 }
 \value{
     If \code{factor = FALSE}, the result is an integer vector with all elements ranging from 1 to \code{k}, where \code{k} is the number of unique elements. For vector \code{x} or a matrix \code{x} with \code{MARGIN=0}, the output has the same length as the input; for matrix \code{x}, the output has length \code{NROW(x)} if \code{MARGIN=1} and length \code{NCOL(x)} if \code{MARGIN=2}. 
