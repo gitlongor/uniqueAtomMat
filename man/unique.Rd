@@ -16,11 +16,11 @@ These S3 methods are alternative (typically much faster) implementations of coun
 
 \usage{
 \method{unique}{matrix}(x, incomparables = FALSE, MARGIN = 1,
-       fromLast = FALSE, \dots)
+       fromLast = FALSE, signif=Inf, \dots)
 \method{duplicated}{matrix}(x, incomparables = FALSE, MARGIN = 1,
-           fromLast = FALSE, \dots)
+           fromLast = FALSE, signif=Inf,\dots)
 \method{anyDuplicated}{matrix}(x, incomparables = FALSE,
-           MARGIN = 1, fromLast = FALSE, \dots)
+           MARGIN = 1, fromLast = FALSE, signif=Inf,\dots)
 }
 
 
@@ -31,10 +31,13 @@ These S3 methods are alternative (typically much faster) implementations of coun
   
   \item{fromLast}{a logical scalar indicating if duplication should be considered
     from the last, as in \code{\link[base:unique]{base::unique.matrix}}. }
-    
+	
   \item{\dots}{arguments for particular methods.}
   
   \item{MARGIN}{a numeric scalar, the matrix margin to be held fixed, as in \code{\link{apply}}. For \code{unique.matrix}, only \code{MARGIN=1} and \code{MARGIN=2} are allowed; for \code{duplicated.matrix} and \code{anyDuplicated.matrix}, \code{MARGIN=0} is also allowed. For all other cases, the implementation in the \code{base} package will be called.}
+  
+  \item{signif}{a numerical scalar only applicable to numeric or complex \code{x}. If \code{signif=NULL}, then \code{x} will first be passed to \code{\link{signif}} function with the number of significant digits being the \code{C} constant \code{DBL_DIG}, as explained in \code{\link{as.character}}. If \code{signif=Inf} (which is the default value), then \code{x} is untouched before finding duplicates. If \code{signif} is any other number, it  specifies the required number of significant digits for \code{\link{signif}} function. }  
+  
 }
 
 \details{
@@ -43,9 +46,7 @@ These S3 methods are alternative implementations of counterparts in the \code{ba
   Missing values are regarded as equal, but \code{NaN} is not equal to
   \code{NA_real_}. 
   
-  Further, in contrast to the \code{base} counterparts, characters and numeric values are compared directly based on their internal representations; i.e., no encoding issues for characters nor rounding issues for floating-points are considered. Complex values are compared by their real and imaginary parts separately. All comparisons are exact. 
-
-
+ Further, in contrast to the \code{base} counterparts, characters are compared directly based on their internal representations; i.e., no encoding issues for characters. Complex values are compared by their real and imaginary parts separately. 
 }
 
 \value{
@@ -57,12 +58,13 @@ These S3 methods are alternative implementations of counterparts in the \code{ba
 
 }
 \section{Warning}{
-In contrast to the \code{base} counter-parts, characters and numeric values are compared directly based on their internal representations; i.e., no encoding issues for characters nor rounding issues for floating-points are considered.  Complex values are compared by their real and imaginary parts separately. All comparisons are exact.   \link{Long vectors} are not supported yet. 
+In contrast to the \code{base} counterparts, 
+characters are compared directly based on their internal representations without considering encoding issues; for numeric and complex matrices, the default \code{signif} is \code{Inf}, i.e. comparing floating point values directly without rounding; and \link{long vectors} are not supported yet. 
 }
 
 
 \seealso{
-  \code{\link[base:duplicated]{base::duplicated}}, \code{\link[base:unique]{base::unique}}
+  \code{\link[base:duplicated]{base::duplicated}}, \code{\link[base:unique]{base::unique}}, \code{\link{signif}}, \code{grpDuplicated}
 }
 
 \examples{
