@@ -22,7 +22,7 @@ static R_CallMethodDef callMethods[]  = {
   {"dupAtomMat", (DL_FUNC) &HASHED_NAME(dupAtomMat), 3},
   {"anyDupAtomMat", (DL_FUNC) &HASHED_NAME(anyDupAtomMat), 3},
   {"grpDupAtomMat", (DL_FUNC) &HASHED_NAME(grpDupAtomMat), 3},
-  {"dbl_dig", (DL_FUNC) &dbl_dig, 3},
+  {"dbl_dig", (DL_FUNC) &dbl_dig, 0},
   {NULL, NULL, 0}
 };
 	
