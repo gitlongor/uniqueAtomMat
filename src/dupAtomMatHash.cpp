@@ -1,7 +1,35 @@
 #include "config.h"
 #ifdef HAVE_CXX1X
+
+#include <climits>  /* for CHAR_BIT */
+#include <cstdint> 	 /* for uint_fast32_t etc */
+
+#define RANDBIT8  0x8B
+#define RANDBIT16 0x135E
+#define RANDBIT32 0x183B2DEA
+#define RANDBIT64 0x7EC95B50E031CBAC
+union {
+	uint_fast8_t ui8;
+	uint_fast16_t ui16;
+	uint_fast32_t ui32;
+	uint_fast64_t ui64;
+	size_t randbit;
+} randbit;
+unsigned int lshift, rshift;
+extern "C" int initHash(void)
+{
+	switch (sizeof(size_t) * CHAR_BIT){
+		case 32:	randbit.ui32 = RANDBIT32; lshift=6;  rshift=2; return 1;
+		case 64:	randbit.ui64 = RANDBIT64; lshift=12; rshift=4; return 1;
+		case 16:	randbit.ui16 = RANDBIT16; lshift=3;  rshift=1; return 1;
+		case 8:		randbit.ui8  = RANDBIT8;  lshift=2;  rshift=0; return 1;
+		default:	randbit.ui64 = RANDBIT64; lshift=12; rshift=4; return 0;		
+	}
+}
 #include "rcSetHash.h"
 
+
+	
 // instantiation of global objects:
 vecSetHash<int> 			intVecSetHash;
 vecSetHash<double> 			doubleVecSetHash;

@@ -3,7 +3,10 @@
 
 #include "rcVec.h"
 
+/* Needs global randbit, lshift, rshift defined */
+
 namespace std {
+	
 template <typename T>
 struct hash <rcVec<T> > {
 public: 
@@ -11,7 +14,7 @@ public:
 	{	size_t ans = 0;
 		int i ;
 		for(i = x.len - 1; i >=0; i--)
-			ans ^= hash<T>()(*(x.x + x.eltShift * i) ) + 0x9e3779b9 + (ans << 6) + (ans >> 2); 
+			ans ^= ((hash<T>()(*(x.x + x.eltShift * i) ) ^ (randbit.randbit) + (ans<<lshift) + (ans>>rshift)) );
 		return ans;
 	}
 };
@@ -33,7 +36,7 @@ public:
 	{	
 		size_t tmp;
 		tmp = std::hash<double>()(x.r);
-		return tmp ^ ( std::hash<double>()(x.i)  + 0x9e3779b9 + (tmp << 6) + (tmp >> 2) ); 
+		return tmp ^ ( ( std::hash<double>()(x.i)  ^ randbit.randbit) + (tmp<<lshift) + (tmp>>rshift) ); 
 	}
 };
 

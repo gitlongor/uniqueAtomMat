@@ -9,6 +9,8 @@
 	extern SEXP dupAtomMatHash(SEXP, SEXP, SEXP);
 	extern SEXP anyDupAtomMatHash(SEXP, SEXP, SEXP);
 	extern SEXP grpDupAtomMatHash(SEXP, SEXP, SEXP);
+	extern int initHash(void);
+	
 #else
 	#define HASHED_NAME(fun) fun
 	extern SEXP dupAtomMat(SEXP, SEXP, SEXP);
@@ -26,5 +28,8 @@ static R_CallMethodDef callMethods[]  = {
 
 void R_init_uniqueAtomMat(DllInfo *info)
 {
+#ifdef HAVE_CXX1X
+   if(!initHash())error("Hashing initialization error");
+#endif   
    R_registerRoutines(info, NULL, callMethods, NULL, NULL);
 }
