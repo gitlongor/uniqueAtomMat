@@ -41,7 +41,7 @@ These S3 methods are alternative (typically much faster) implementations of coun
 }
 
 \details{
-These S3 methods are alternative implementations of counterparts in the \code{base} package for atomic matrices (i.e., double, integer, logical, character, complex and raw) directly based on C++98 Standard Template Library (STL) \code{std::set}, or C++11 STL \code{std::unordered_set}. The implementation treats the whole row (or column) \emph{vector} as the key, without the intermediate steps of converting the mode to \code{character} nor collapsing them into a \emph{scalar} as done in \code{base}. On systems with empty \code{`R CMD config CXX1X`}, the C++98 STL \code{std::set} is used, which is typically implemented as a self-balancing tree (usually a red-black tree), which takes \eqn{latex}{O[n\log{(n)}]} to find all duplicates, where \code{n=dim(x)[MARGIN]}. On systems with non-empty \code{`R CMD config CXX1X`}, the C++11 STL \code{std::unordered_set} is used, with average \eqn{latex}{O[n]} performance and worst case \eqn{latex}{O[n^2]} performance.
+These S3 methods are alternative implementations of counterparts in the \code{base} package for atomic matrices (i.e., double, integer, logical, character, complex and raw) directly based on C++98 Standard Template Library (STL) \code{std::set}, or C++11 STL \code{std::unordered_set}. The implementation treats the whole row (or column) \emph{vector} as the key, without the intermediate steps of converting the mode to \code{character} nor collapsing them into a \emph{scalar} as done in \code{base}. On systems with empty \code{`R CMD config CXX1X`}, the C++98 STL \code{std::set} is used, which is typically implemented as a self-balancing tree (usually a red-black tree), which takes \eqn{O[n\log{(n)}]}{O[n log(n)]} to find all duplicates, where \code{n=dim(x)[MARGIN]}. On systems with non-empty \code{`R CMD config CXX1X`}, the C++11 STL \code{std::unordered_set} is used, with average \eqn{O(n)}{O(n)} performance and worst case \eqn{O(n^2)}{O(n^2)} performance.
 
   Missing values are regarded as equal, but \code{NaN} is not equal to
   \code{NA_real_}. 
@@ -64,7 +64,7 @@ characters are compared directly based on their internal representations without
 
 
 \seealso{
-  \code{\link[base:duplicated]{base::duplicated}}, \code{\link[base:unique]{base::unique}}, \code{\link{signif}}, \code{grpDuplicated}
+  \code{\link[base:duplicated]{base::duplicated}}, \code{\link[base:unique]{base::unique}}, \code{\link{signif}}, \code{\link{grpDuplicated}}
 }
 
 \examples{
