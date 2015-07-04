@@ -19,7 +19,7 @@ grpDuplicated(x, incomparables = FALSE, factor=FALSE, ...)
   \item{x}{a vector or matrix of atomic mode \code{"numeric"}, \code{"integer"}, \code{"logical"}, \code{"complex"}, \code{"character"} or \code{"raw"}. Currently, non-atomic vector/matrix is not supported. 
   }
   
-  \item{incomparables}{a vector of values that cannot be compared, as in \code{\link[base:unique]{base::unique.matrix}}.  Only \code{FALSE} is suppored.  }
+  \item{incomparables}{a vector of values that cannot be compared, as in \code{\link[base:unique]{base::unique.matrix}}.  Only \code{FALSE} is supported.  }
   
   \item{factor}{a logical scalar, indicating if the result should be given as an integer vector (default) or a factor. }
   
@@ -33,7 +33,7 @@ grpDuplicated(x, incomparables = FALSE, factor=FALSE, ...)
   \item{signif}{a numerical scalar only applicable to numeric or complex \code{x}. If \code{signif=NULL}, then \code{x} will first be passed to \code{\link{signif}} function with the number of significant digits being the \code{C} constant \code{DBL_DIG}, as explained in \code{\link{as.character}}. If \code{signif=Inf} (which is the default value), then \code{x} is untouched before finding duplicates. If \code{signif} is any other number, it  specifies the required number of significant digits for \code{\link{signif}} function. }  
 }
 \details{
-For atomic \code{x}, the implementation is based on \code{std::map} in C++ standard template library. 
+For atomic \code{x}, the implementation is based on \code{std::map} in C++98 standard template library on systems with empty \code{R CMD config CXX1X}, and based on \code{std::unordered_map} otherwise. 
 }
 \value{
     If \code{factor = FALSE}, the result is an integer vector with all elements ranging from 1 to \code{k}, where \code{k} is the number of unique elements. For vector \code{x} or a matrix \code{x} with \code{MARGIN=0}, the output has the same length as the input; for matrix \code{x}, the output has length \code{NROW(x)} if \code{MARGIN=1} and length \code{NCOL(x)} if \code{MARGIN=2}. 

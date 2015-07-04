@@ -5,7 +5,7 @@
 
 \title{Finding Unique or Duplicated Rows or Columns for Atomic Matrices}
 \description{
-These S3 methods are alternative (typically much faster) implementations of couterparts in the \code{base} pacakge for atomic matrices.  
+These S3 methods are alternative (typically much faster) implementations of counterparts in the \code{base} package for atomic matrices.  
 
   \code{unique.matrix} returns a matrix with duplicated rows (or columns) removed. 
   
@@ -41,12 +41,12 @@ These S3 methods are alternative (typically much faster) implementations of cout
 }
 
 \details{
-These S3 methods are alternative implementations of couterparts in the \code{base} pacakge for atomic matrices (i.e., double, integer, logical, character, complex and raw) directly based on C++ Standard Template Library (STL) \code{std::set}. The implementation treats the whole row (or columns) \emph{vector} as the key, without converting the mode to \code{character} nor collapsing them into a \emph{scalar} as done in \code{base}. Depending on the C++ compiler used on the system, STL \code{std::set} is typically implemented as a sel-balancing tree (usually a red-black tree), which takes \eqn{latex}{O[n\log{(n)}]} to find all duplicates, where \code{n=dim(x)[MARGIN]}.
+These S3 methods are alternative implementations of counterparts in the \code{base} package for atomic matrices (i.e., double, integer, logical, character, complex and raw) directly based on C++98 Standard Template Library (STL) \code{std::set}, or C++11 STL \code{std::unordered_set}. The implementation treats the whole row (or column) \emph{vector} as the key, without the intermediate steps of converting the mode to \code{character} nor collapsing them into a \emph{scalar} as done in \code{base}. On systems with empty \code{`R CMD config CXX1X`}, the C++98 STL \code{std::set} is used, which is typically implemented as a self-balancing tree (usually a red-black tree), which takes \eqn{latex}{O[n\log{(n)}]} to find all duplicates, where \code{n=dim(x)[MARGIN]}. On systems with non-empty \code{`R CMD config CXX1X`}, the C++11 STL \code{std::unordered_set} is used, with average \eqn{latex}{O[n]} performance and worst case \eqn{latex}{O[n^2]} performance.
 
   Missing values are regarded as equal, but \code{NaN} is not equal to
   \code{NA_real_}. 
   
-  Further, in contrast to the \code{base} counterparts, characters are compared directly based on their internal representations; i.e., no encoding issues for characters. Complex values are compared by their real and imaginary parts separately. 
+ Further, in contrast to the \code{base} counterparts, characters are compared directly based on their internal representations; i.e., no encoding issues for characters. Complex values are compared by their real and imaginary parts separately. 
 }
 
 \value{

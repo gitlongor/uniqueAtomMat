@@ -1,6 +1,6 @@
 Package: uniqueAtomMat
 Version: 0.1-1
-Date: 2015-06-27
+Date: 2015-07-04
 Title: Finding Unique or Duplicated Rows or Columns for Atomic Matrices
 Authors@R: person("Long", "Qu", role=c("aut", "cre"), email="long.qu@wright.edu")
 Depends: R (>= 3.1.2)
