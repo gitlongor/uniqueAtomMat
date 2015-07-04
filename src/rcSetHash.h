@@ -14,7 +14,7 @@ public:
 	{	size_t ans = 0;
 		int i ;
 		for(i = x.len - 1; i >=0; i--)
-			ans ^= ((hash<T>()(*(x.x + x.eltShift * i) ) ^ (randbit.randbit) + (ans<<lshift) + (ans>>rshift)) );
+			ans ^= ((hash<T>()(*(x.x + x.eltShift * i) )) ^ randbit.randbit) + (ans<<lshift) + (ans>>rshift) ;
 		return ans;
 	}
 };
