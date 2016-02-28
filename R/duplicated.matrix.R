@@ -86,9 +86,11 @@ grpDuplicated.matrix=function(x, incomparables = FALSE, factor=FALSE, MARGIN = 1
 
    if (nzeroMarg) {
         ans = .Call(C_grpDupAtomMat, x, as.integer(MARGIN), as.logical(fromLast))
+		if(fromLast) ans[]=(attr(ans, 'nlevels'):1L)[ans] # ensure the group ids agree with row/col index of result from "unique"
     }else{
         att=attributes(x); dim(x)=c(as.integer(prod(att$dim)), 1L)
         ans = .Call(C_grpDupAtomMat, x, MARGIN=1L, as.logical(fromLast))
+		if(fromLast) ans[]=(attr(ans, 'nlevels'):1L)[ans] # ensure the group ids agree with element index of result from "duplicated"
         if(any(att$class=='factor')){
             att$class= setdiff(att$class, c('ordered','factor','matrix'))
             if(length(att$class)==0L) att$class=NULL

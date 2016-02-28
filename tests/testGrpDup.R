@@ -104,6 +104,14 @@ x.double=model.matrix(~trt.original)
 ## check equivalence: should be a permutation matrix:
 stopifnot(testEquivalence(trt.original, trt.equivalent) )
 
+## check equivalence: recover x matrix
+x.uniq.row=unique(x.double, MARGIN=1L)
+stopifnot(all(x.double==x.uniq.row[trt.equivalent,])) # TRUE
+
+x.uniq.row=unique(x.double, MARGIN=1L, fromLast=TRUE)
+stopifnot(all(x.double==x.uniq.row[grpDuplicated(x.double, fromLast=TRUE),])) # TRUE
+
+
 
 ## prepare more test data: 
 set.seed(9992722L, kind="Mersenne-Twister")
@@ -147,6 +155,7 @@ for(testi in 0:Nreps){
     test.cases=expand.grid(x = x.objs, MARGIN=0:2, fromLast=c(FALSE, TRUE), factor=c(FALSE, TRUE), stringsAsFactors=FALSE)
     
     for(i in seq_len(nrow(test.cases))){
+		print(test.cases[i,])
         this.case=as.list(test.cases[i,])
         this.case$x=get(this.case$x)
 		this.case.nofact=this.case; this.case.nofact$factor=NULL
@@ -177,6 +186,14 @@ for(testi in 0:Nreps){
 			    stopifnot(testEquivalence(trt.original, this.ans))
 		    }
 		}
+		if(this.case$MARGIN!=0L) {
+			uniq.ans=do.call(base::unique, this.case.nofact)
+			stopifnot(all.equal(this.case$x, check.attributes=FALSE, 
+				if(this.case$MARGIN==1L) uniq.ans[this.ans,,drop=TRUE] else uniq.ans[,this.ans,drop=TRUE]
+			))
+			print("x recovery OK")
+		}
+		
         if(!R_CHECK_TIMINGS_ ) {
             stopifnot(identical(do.call(grpDuplicated.matrix.R, this.case), this.ans))
         }

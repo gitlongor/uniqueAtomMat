@@ -6,7 +6,7 @@
 Grouping by duplicated elements
 }
 \description{
-\code{grpDuplicated} is a generic function that outputs an integer vector such that input elements share a common output integer value if and only if they are identical to each other; in other words, duplicated elements are \emph{grouped} together with a common integer group number.  
+\code{grpDuplicated} is a generic function that outputs an integer vector such that input elements share a common output integer value if and only if they are identical to each other; in other words, duplicated elements are \emph{grouped} together with a common integer group number.  From matrices, this can be used to reconstruct the original matrix from the result of \code{unique} funciton. 
 }
 \usage{
 grpDuplicated(x, incomparables = FALSE, factor=FALSE, ...)
@@ -34,6 +34,13 @@ grpDuplicated(x, incomparables = FALSE, factor=FALSE, ...)
 }
 \details{
 For atomic \code{x}, the implementation is based on \code{std::map} in C++98 standard template library on systems with empty \code{R CMD config CXX1X}, and based on \code{std::unordered_map} otherwise. 
+
+\code{grpDuplicated} function returns vector of integers that agree with (up to \code{signif} digits) the corresponding results from the call to \code{unique} if \code{MARGIN=1} or \code{MARGIN=2}, as long as the same \code{fromLast} argument is used for both \code{grpDuplicated} and \code{unique}. Specifically, all the following will recover the original \code{x} values (attributes being ignored) when \code{x} is a matrix:  
+
+\code{unique(x, MARGIN=1L, fromLast=tf)[grpDuplicated(x, MARGIN=1L, fromLast=tf),,drop=TRUE]}\cr
+\code{unique(x, MARGIN=2L, fromLast=tf)[, grpDuplicated(x, MARGIN=2L, fromLast=tf),,drop=TRUE]}\cr
+
+where \code{tf} above is either \code{TRUE} or \code{FALSE}.
 }
 \value{
     If \code{factor = FALSE}, the result is an integer vector with all elements ranging from 1 to \code{k}, where \code{k} is the number of unique elements. For vector \code{x} or a matrix \code{x} with \code{MARGIN=0}, the output has the same length as the input; for matrix \code{x}, the output has length \code{NROW(x)} if \code{MARGIN=1} and length \code{NCOL(x)} if \code{MARGIN=2}. 
@@ -60,13 +67,20 @@ trt.original=gl(5,8)[sample(40)]
 ## check equivalence: should be a permutation matrix:
 (table(trt.original, trt.equivalent)!=0)*1
 
-
 ## equivalent recoding based on a design matrix
 x.double=model.matrix(~trt.original)
 (trt.equivalent=grpDuplicated(x.double, factor=TRUE, MARGIN=1))
 
 ## check equivalence: should be a permutation matrix:
 (table(trt.original, trt.equivalent)!=0)*1
+
+## check equivalence: recovering the original matrix from unique: 
+x.uniq.row=unique(x.double, MARGIN=1L)
+all.equal(x.double, x.uniq.row[trt.equivalent,], check.attributes=FALSE)
+
+x.uniq.row=unique(x.double, MARGIN=1L, fromLast=TRUE)
+all.equal(x.double, x.uniq.row[grpDuplicated(x.double, fromLast=TRUE),], check.attributes=FALSE)
+
 
 }
 
