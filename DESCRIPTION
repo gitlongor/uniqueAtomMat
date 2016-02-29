@@ -3,7 +3,7 @@ Version: 0.1-1
 Date: 2016-02-29
 Title: Finding Unique or Duplicated Rows or Columns for Atomic Matrices
 Authors@R: person("Long", "Qu", role=c("aut", "cre"), email="long.qu@wright.edu")
-Depends: R (>= 3.0.0)
+Depends: R (>= 3.1.0)
 Enhances: base
 Suggests: microbenchmark
 Description: An alternative implementation and extension (grpDuplicated) of base::duplicated.matrix, base:anyDuplicated.matrix and base::unique.matrix for matrices of atomic mode, avoiding the time consuming collapse of the matrix into a character vector. 
