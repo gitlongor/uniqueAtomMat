@@ -1,4 +1,5 @@
 R_CHECK_TIMINGS_ = Sys.getenv('_R_CHECK_TIMINGS_') != ''
+print(R_CHECK_TIMINGS_)
 
 stopifnot(require(uniqueAtomMat))
 
@@ -65,6 +66,7 @@ grpDuplicated.matrix.R=function(x, incomparables = FALSE, factor=FALSE, MARGIN =
                 }
             }
             attr(ans, 'nlevels')=NROW(uniq)
+			if(fromLast) ans[]=(max(ans):1L)[ans]
         }else{
             ans=grpDuplicated.matrix.R(t(x), incomparables, factor=FALSE, MARGIN=1, fromLast)
         }
@@ -72,6 +74,7 @@ grpDuplicated.matrix.R=function(x, incomparables = FALSE, factor=FALSE, MARGIN =
         att=attributes(x); dim(x)=c(as.integer(prod(att$dim)), 1L)
         #ans = .Call(C_grpDupAtomMat, x, MARGIN=1L, as.logical(fromLast))
         ans = grpDuplicated.matrix.R(x, incomparables, factor=FALSE, MARGIN=1, fromLast)
+		#if(fromLast)ans[]=(max(ans):1L)[ans]
         if(any(att$class=='factor')){
             att$class= setdiff(att$class, c('ordered','factor','matrix'))
             if(length(att$class)==0L) att$class=NULL
@@ -186,11 +189,24 @@ for(testi in 0:Nreps){
 			    stopifnot(testEquivalence(trt.original, this.ans))
 		    }
 		}
+		
+		## test: recovery of x 
 		if(this.case$MARGIN!=0L) {
 			uniq.ans=do.call(base::unique, this.case.nofact)
 			stopifnot(all.equal(this.case$x, check.attributes=FALSE, 
 				if(this.case$MARGIN==1L) uniq.ans[this.ans,,drop=TRUE] else uniq.ans[,this.ans,drop=TRUE]
 			))
+			print("x recovery OK")
+		}else{
+			tmpdim=dim(this.case.nofact$x)
+			dim(this.case.nofact$x)=c(prod(tmpdim), 1L)
+			this.case.nofact$MARGIN = 1L
+			uniq.ans=do.call(base::unique, this.case.nofact)
+			stopifnot(all.equal(drop(this.case.nofact$x), check.attributes=FALSE, 
+				uniq.ans[this.ans]
+			))
+			this.case.nofact$MARGIN = 0L
+			dim(this.case.nofact$x) = tmpdim
 			print("x recovery OK")
 		}
 		
