@@ -3,6 +3,7 @@
 
 #include <climits>  /* for CHAR_BIT */
 #include <cstdint> 	 /* for uint_fast32_t etc */
+#include <cstddef>  /* for size_t */ 
 
 #define RANDBIT8  0x8B
 #define RANDBIT16 0x135E
