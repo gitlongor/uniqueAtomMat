@@ -33,7 +33,7 @@ grpDuplicated(x, incomparables = FALSE, factor=FALSE, ...)
   \item{signif}{a numerical scalar only applicable to numeric or complex \code{x}. If \code{signif=NULL}, then \code{x} will first be passed to \code{\link{signif}} function with the number of significant digits being the \code{C} constant \code{DBL_DIG}, as explained in \code{\link{as.character}}. If \code{signif=Inf} (which is the default value), then \code{x} is untouched before finding duplicates. If \code{signif} is any other number, it  specifies the required number of significant digits for \code{\link{signif}} function. }  
 }
 \details{
-For atomic \code{x}, the implementation is based on \code{std::map} in C++98 standard template library on systems with empty \code{R CMD config CXX1X}, and based on \code{std::unordered_map} otherwise. 
+For atomic \code{x}, the implementation is based on \code{std::map} in C++98 standard template library on systems with empty \code{R CMD config CXX11}, and based on \code{std::unordered_map} otherwise. 
 
 \code{grpDuplicated} function returns vector of integers that agree with (up to \code{signif} digits) the corresponding results from the call to \code{unique} if \code{MARGIN=1} or \code{MARGIN=2}, as long as the same \code{fromLast} argument is used for both \code{grpDuplicated} and \code{unique}. Specifically, all the following will recover the original \code{x} values (attributes being ignored) when \code{x} is a matrix:  
 

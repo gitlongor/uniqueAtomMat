@@ -1,5 +1,5 @@
 #include "config.h"
-#ifdef HAVE_CXX1X
+#ifdef HAVE_CXX11
 
 #include <climits>  /* for CHAR_BIT */
 #include <cstdint> 	 /* for uint_fast32_t etc */

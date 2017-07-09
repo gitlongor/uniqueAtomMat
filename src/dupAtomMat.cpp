@@ -1,5 +1,5 @@
 #include "config.h"
-#ifndef HAVE_CXX1X
+#ifndef HAVE_CXX11
 
 #include "rcSet.h"
 

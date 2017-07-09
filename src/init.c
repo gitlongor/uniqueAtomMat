@@ -4,7 +4,7 @@
 #include <R_ext/Rdynload.h>
 
 
-#ifdef HAVE_CXX1X
+#ifdef HAVE_CXX11
 	#define HASHED_NAME(fun) fun ## Hash
 	extern SEXP dupAtomMatHash(SEXP, SEXP, SEXP);
 	extern SEXP anyDupAtomMatHash(SEXP, SEXP, SEXP);
@@ -29,7 +29,7 @@ static R_CallMethodDef callMethods[]  = {
 
 void R_init_uniqueAtomMat(DllInfo *info)
 {
-#ifdef HAVE_CXX1X
+#ifdef HAVE_CXX11
    if(!initHash())error("Hashing initialization error");
 #endif   
    R_registerRoutines(info, NULL, callMethods, NULL, NULL);
